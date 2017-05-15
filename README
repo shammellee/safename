@@ -1,0 +1,9 @@
+<!-- vim: set filetype=markdown syntax=markdown: -->
+
+# Description
+Renames files/directories to only use lowercase characters, numbers, periods, and underscores
+
+# Usage
+```sh
+$ safename '(uN)sAFe ~ fI:lE-na.Me?.txt'  # output: unsafe_file_name.txt
+```

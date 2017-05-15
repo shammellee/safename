@@ -1,0 +1,56 @@
+#! /usr/bin/env bash
+# vim: filetype=sh syntax=sh
+
+if [[ $# == 0 ]]
+then
+  echo -e "\e[31mError\e[0m No files or directories specified"
+  exit 1
+else
+  while (($#))
+  do
+    if [[ -e "$1" ]]
+    then
+      file_directory="$(cd "$(dirname "$1")";pwd)"
+      file_name="${1##*/}"
+
+      if [[ -f "$1" ]]
+      then
+        file_stem="${file_name%.*}"
+      else
+        file_stem="$file_name"
+      fi
+
+      file_stem="$(sed -E -e 's/[][\:;{}|!?’"#$%()*,<>=\~^]//g' <<< "$file_stem")"  # remove symbols
+      file_stem="$(sed -E -e "s/'//g" <<< "$file_stem")"  # remove apostrophes
+      file_stem="$(sed -E -e 's/@/_at_/g' <<< "$file_stem")"  # ampersat  -> at
+      file_stem="$(sed -E -e 's/[\&\+]/_and_/g' <<< "$file_stem")"  # ampersand, plus -> and
+      file_stem="$(sed -E -e 's/[[:space:]][[:space:]]+/ /g' <<< "$file_stem")"  # remove multiple whitespace
+      file_stem="$(sed -E -e 's/[[:space:]]+/_/g' <<< "$file_stem")"  # whitespace -> underscores
+      file_stem="$(sed -E -e 's/[-]/_/g' <<< "$file_stem")"  # hyphen -> underscore
+      file_stem="$(sed -E -e 's/__+/_/g' <<< "$file_stem")"  # multiple underscores -> single underscore
+      file_stem="$(sed -E -e 's/^_+//' <<< "$file_stem")"  # remove leading underscores
+      file_stem="$(sed -E -e 's/_+$//' <<< "$file_stem")"  # remove trailing underscores
+      file_stem="$(tr '[:upper:]' '[:lower:]' <<< "$file_stem")"  # uppercase -> lowercase
+
+      if [[ -f "$1" ]]
+      then
+        file_extension="${file_name##*.}"
+        file_extension="${file_extension// /_}"
+        file_extension="$(tr '[:upper:]' '[:lower:]' <<< "$file_extension")"
+
+        mv "$1" "${file_directory}/${file_stem}${file_extension:+.$file_extension}"
+      else
+        sanitized_file="${file_directory}/${file_stem}"
+
+        if [[ "$1" != "$sanitized_file" ]]  # if name was not modified
+        then
+          mv "$1" "$sanitized_file"
+        fi
+      fi
+    else
+      echo -e "\e[31mError\e[0m No file '${1}'"
+    fi
+
+    shift
+  done
+fi
