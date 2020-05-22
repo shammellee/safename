@@ -21,16 +21,17 @@ else
       fi
 
       file_stem="$(sed -E -e 's/[][\:;{}|!?’"#$%()*,<>=\~^]//g' <<< "$file_stem")"  # remove symbols
-      file_stem="$(sed -E -e "s/'//g" <<< "$file_stem")"  # remove apostrophes
-      file_stem="$(sed -E -e 's/@/_at_/g' <<< "$file_stem")"  # ampersat  -> at
-      file_stem="$(sed -E -e 's/[\&\+]/_and_/g' <<< "$file_stem")"  # ampersand, plus -> and
-      file_stem="$(sed -E -e 's/[[:space:]][[:space:]]+/ /g' <<< "$file_stem")"  # remove multiple whitespace
-      file_stem="$(sed -E -e 's/[[:space:]]+/_/g' <<< "$file_stem")"  # whitespace -> underscores
-      file_stem="$(sed -E -e 's/[-]/_/g' <<< "$file_stem")"  # hyphen -> underscore
-      file_stem="$(sed -E -e 's/__+/_/g' <<< "$file_stem")"  # multiple underscores -> single underscore
-      file_stem="$(sed -E -e 's/^_+//' <<< "$file_stem")"  # remove leading underscores
-      file_stem="$(sed -E -e 's/_+$//' <<< "$file_stem")"  # remove trailing underscores
-      file_stem="$(tr '[:upper:]' '[:lower:]' <<< "$file_stem")"  # uppercase -> lowercase
+      file_stem="$(sed -E -e "s/'//g" <<< "$file_stem")"                            # remove apostrophes
+      file_stem="$(sed -E -e 's/@/_at_/g' <<< "$file_stem")"                        # @ to _at_
+      file_stem="$(sed -E -e 's/[\&]/_and_/g' <<< "$file_stem")"                    # & to _and_
+      file_stem="$(sed -E -e 's/[\+]/plus/g' <<< "$file_stem")"                     # + to plus
+      file_stem="$(sed -E -e 's/[[:space:]][[:space:]]+/ /g' <<< "$file_stem")"     # remove multiple whitespace
+      file_stem="$(sed -E -e 's/[[:space:]]+/_/g' <<< "$file_stem")"                # whitespace to underscores
+      file_stem="$(sed -E -e 's/[-]/_/g' <<< "$file_stem")"                         # hyphen to underscore
+      file_stem="$(sed -E -e 's/__+/_/g' <<< "$file_stem")"                         # multiple underscores to single underscore
+      file_stem="$(sed -E -e 's/^_+//' <<< "$file_stem")"                           # remove leading underscores
+      file_stem="$(sed -E -e 's/_+$//' <<< "$file_stem")"                           # remove trailing underscores
+      file_stem="$(tr '[:upper:]' '[:lower:]' <<< "$file_stem")"                    # uppercase to lowercase
 
       if [[ -f "$1" ]]
       then
