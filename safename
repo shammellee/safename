@@ -39,15 +39,18 @@ else
         file_extension="${file_extension// /_}"
         file_extension="$(tr '[:upper:]' '[:lower:]' <<< "$file_extension")"
 
-        mv "$1" "${file_directory}/${file_stem}${file_extension:+.$file_extension}"
+        output_path="${file_directory}/${file_stem}${file_extension:+.$file_extension}"
       else
         sanitized_file="${file_directory}/${file_stem}"
 
-        if [[ "$1" != "$sanitized_file" ]]  # if name was not modified
+        if [[ "$1" != "$sanitized_file" ]]  # if file name needed sanitization
         then
-          mv "$1" "$sanitized_file"
+          output_path="$sanitized_file"
         fi
       fi
+
+      [[ -n "$output_path" ]] && mv "$1" "$output_path"
+
     else
       echo -e "\e[31mError\e[0m No file '${1}'"
     fi
